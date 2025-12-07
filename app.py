@@ -12,9 +12,9 @@ app.secret_key = "dev-secret-key"
 db.init_app(app)
 
 
-# -----------------------------
+# -------------------------------------------------
 # اللغة الحالية
-# -----------------------------
+# -------------------------------------------------
 def get_lang():
     lang = request.args.get("lang")
     if lang not in ("en", "de", "ar"):
@@ -32,17 +32,17 @@ def inject_lang():
     }
 
 
-# -----------------------------
+# -------------------------------------------------
 # الراوت الرئيسي → اللوجين
-# -----------------------------
+# -------------------------------------------------
 @app.route("/")
 def home():
     return redirect(url_for("login_page"))
 
 
-# -----------------------------
+# -------------------------------------------------
 # صفحة تسجيل الدخول (GET)
-# -----------------------------
+# -------------------------------------------------
 @app.route("/login", methods=["GET"])
 def login_page():
     lang = get_lang()
@@ -60,9 +60,9 @@ def login_page():
     )
 
 
-# -----------------------------
+# -------------------------------------------------
 # معالجة تسجيل الدخول (POST)
-# -----------------------------
+# -------------------------------------------------
 @app.route("/login", methods=["POST"])
 def login_post():
     lang = get_lang()
@@ -89,6 +89,7 @@ def login_post():
 
         session["remember_me_checked"] = remember
         if remember:
+            # نخزن آخر identifier استخدمه (ممكن يكون إيميل أو يوزر)
             session["remembered_identifier"] = identifier
         else:
             session.pop("remembered_identifier", None)
@@ -99,9 +100,9 @@ def login_post():
         return redirect(url_for("login_page", lang=lang))
 
 
-# -----------------------------
+# -------------------------------------------------
 # Forgot password (بسيطة مؤقتاً)
-# -----------------------------
+# -------------------------------------------------
 @app.route("/forgot-password", methods=["GET", "POST"])
 def forgot_password():
     lang = get_lang()
@@ -115,9 +116,9 @@ def forgot_password():
     return render_template("forgot_password.html", lang=lang, message=message)
 
 
-# -----------------------------
+# -------------------------------------------------
 # Sign up حقيقي
-# -----------------------------
+# -------------------------------------------------
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     lang = get_lang()
@@ -160,18 +161,33 @@ def signup():
     return render_template("signup.html", lang=lang, error=error, success=success)
 
 
-# -----------------------------
-# تسجيل الخروج
-# -----------------------------
+# -------------------------------------------------
+# تسجيل الخروج (مع الاحتفاظ بالـ remember me)
+# -------------------------------------------------
 @app.route("/logout")
 def logout():
+    # نخزن اللغة وبيانات الـ remember me قبل مسح السيشن
+    lang = session.get("lang", "en")
+    remembered_identifier = session.get("remembered_identifier")
+    remembered_flag = session.get("remember_me_checked", False)
+
+    # نمسح باقي بيانات السيشن (user_id وغيره)
     session.clear()
-    return redirect(url_for("login_page"))
+
+    # نرجع اللغة
+    session["lang"] = lang
+
+    # لو كان عامل Remember me نرجّع اليوزر/الإيميل
+    if remembered_identifier:
+        session["remembered_identifier"] = remembered_identifier
+        session["remember_me_checked"] = remembered_flag
+
+    return redirect(url_for("login_page", lang=lang))
 
 
-# -----------------------------
+# -------------------------------------------------
 # صفحة الحضانات بعد تسجيل الدخول
-# -----------------------------
+# -------------------------------------------------
 @app.route("/nurseries")
 def nurseries_page():
     lang = get_lang()
@@ -220,9 +236,9 @@ def nurseries_page():
     )
 
 
-# -----------------------------
+# -------------------------------------------------
 # صفحة تفاصيل الحضانة
-# -----------------------------
+# -------------------------------------------------
 @app.route("/nursery/<int:nursery_id>")
 def nursery_detail(nursery_id):
     lang = get_lang()
@@ -239,9 +255,9 @@ def nursery_detail(nursery_id):
     )
 
 
-# -----------------------------
+# -------------------------------------------------
 # صفحة البروفايل (عرض + تعديل)
-# -----------------------------
+# -------------------------------------------------
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
     lang = get_lang()
@@ -269,9 +285,13 @@ def profile():
             error = "Username and email are required."
         else:
             # تأكد أن اليوزرنيم / الإيميل مش مكرر عند مستخدم آخر
-            existing = User.query.filter(
-                or_(User.username == username, User.email == email)
-            ).filter(User.id != user.id).first()
+            existing = (
+                User.query.filter(
+                    or_(User.username == username, User.email == email)
+                )
+                .filter(User.id != user.id)
+                .first()
+            )
 
             if existing:
                 error = "Username or email is already taken by another user."
@@ -302,9 +322,9 @@ def profile():
     )
 
 
-# -----------------------------
+# -------------------------------------------------
 # API صغيرة لتغيير العملة (AJAX)
-# -----------------------------
+# -------------------------------------------------
 @app.route("/set-currency", methods=["POST"])
 def set_currency():
     if "user_id" not in session:
@@ -326,18 +346,18 @@ def set_currency():
     return jsonify({"ok": True})
 
 
-# -----------------------------
+# -------------------------------------------------
 # صفحة About Us بسيطة
-# -----------------------------
+# -------------------------------------------------
 @app.route("/about")
 def about():
     lang = get_lang()
     return render_template("about.html", lang=lang)
 
 
-# -----------------------------
+# -------------------------------------------------
 # تشغيل التطبيق
-# -----------------------------
+# -------------------------------------------------
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
