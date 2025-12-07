@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-shell">
+  <div class="search-card">
+    <div class="search-row">
+      <!-- حقل البحث -->
+      <input
+        id="searchInput"
+        type="text"
+        class="search-input"
+        placeholder="{{ t['search_placeholder'] }}"
+      />
+
+      <!-- الفلاتر + الترتيب -->
+      <div class="filter-row">
+        <div class="filter-group">
+          <span class="chip-label">{{ t["filter_label"] }}</span>
+
+          <button class="filter-chip active" data-curriculum="all">
+            {{ t["all"] }}
+          </button>
+          <button class="filter-chip" data-curriculum="Montessori">
+            {{ t["montessori"] }}
+          </button>
+          <button class="filter-chip" data-curriculum="British">
+            {{ t["british"] }}
+          </button>
+          <button class="filter-chip" data-curriculum="American">
+            {{ t["american"] }}
+          </button>
+          <button class="filter-chip" data-curriculum="International">
+            {{ t["international"] }}
+          </button>
+        </div>
+
+        <div class="filter-group">
+          <span class="chip-label">{{ t["sort_by"] }}</span>
+          <select id="sortSelect" class="sort-select">
+            <option value="rating">{{ t["sort_highest_rated"] }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="resultsCount" class="results-count"></div>
+    </div>
+
+    <div id="nurseryList" class="nursery-grid">
+      <!-- الكروت يتم ملؤها بالـ JS -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

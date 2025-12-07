@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% set lang = current_lang %}
+{% if lang == 'de' %}
+    {% set t_back = 'Zurück zur Liste' %}
+    {% set t_statistics = 'Statistiken' %}
+    {% set t_parent_satisfaction = 'Elternzufriedenheit' %}
+    {% set t_teacher_quality = 'Lehrerqualität' %}
+    {% set t_facilities = 'Einrichtungen' %}
+    {% set t_safety = 'Sicherheit' %}
+    {% set t_curriculum = 'Lehrplan' %}
+    {% set t_details = 'Details' %}
+    {% set t_age_groups = 'Altersgruppen' %}
+    {% set t_total_children = 'Gesamtzahl der Kinder' %}
+    {% set t_staff_ratio = 'Personal-Kind-Verhältnis' %}
+    {% set t_features = 'Merkmale' %}
+    {% set t_parent_reviews = 'Elternbewertungen' %}
+    {% set t_contact = 'Kontakt' %}
+    {% set t_monthly_fee = 'Monatliche Gebühr' %}
+    {% set t_close = 'Schließen' %}
+    {% set t_map_title = 'Standortkarte' %}
+    {% set t_location_label = 'Standort' %}
+{% elif lang == 'ar' %}
+    {% set t_back = 'العودة إلى القائمة' %}
+    {% set t_statistics = 'الإحصائيات' %}
+    {% set t_parent_satisfaction = 'رضا أولياء الأمور' %}
+    {% set t_teacher_quality = 'جودة المعلمين' %}
+    {% set t_facilities = 'المرافق' %}
+    {% set t_safety = 'السلامة' %}
+    {% set t_curriculum = 'المنهج' %}
+    {% set t_details = 'التفاصيل' %}
+    {% set t_age_groups = 'الفئات العمرية' %}
+    {% set t_total_children = 'إجمالي الأطفال' %}
+    {% set t_staff_ratio = 'نسبة الموظفين إلى الأطفال' %}
+    {% set t_features = 'المميزات' %}
+    {% set t_parent_reviews = 'تقييمات أولياء الأمور' %}
+    {% set t_contact = 'التواصل' %}
+    {% set t_monthly_fee = 'الرسوم الشهرية' %}
+    {% set t_close = 'إغلاق' %}
+    {% set t_map_title = 'خريطة الموقع' %}
+    {% set t_location_label = 'الموقع' %}
+{% else %}
+    {% set t_back = 'Back to List' %}
+    {% set t_statistics = 'Statistics' %}
+    {% set t_parent_satisfaction = 'Parent Satisfaction' %}
+    {% set t_teacher_quality = 'Teacher Quality' %}
+    {% set t_facilities = 'Facilities' %}
+    {% set t_safety = 'Safety' %}
+    {% set t_curriculum = 'Curriculum' %}
+    {% set t_details = 'Details' %}
+    {% set t_age_groups = 'Age Groups' %}
+    {% set t_total_children = 'Total Children' %}
+    {% set t_staff_ratio = 'Staff-to-Child Ratio' %}
+    {% set t_features = 'Features' %}
+    {% set t_parent_reviews = 'Parent Reviews' %}
+    {% set t_contact = 'Contact' %}
+    {% set t_monthly_fee = 'Monthly Fee' %}
+    {% set t_close = 'Close' %}
+    {% set t_map_title = 'Location Map' %}
+    {% set t_location_label = 'Location' %}
+{% endif %}
+
+<style>
+    /* خلفية واضحة بالصورة المختارة */
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background-image: url("https://images.pexels.com/photos/7333506/pexels-photo-7333506.jpeg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+
+    .card-soft {
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 22px;
+        box-shadow: 0 10px 30px rgba(120, 88, 62, 0.25);
+        border: 1px solid rgba(227, 200, 175, 0.6);
+    }
+
+    .btn-brown {
+        background: #7A583E;
+        color: #fff;
+        transition: 0.2s ease-in-out;
+    }
+
+    .btn-brown:hover {
+        background: #6A4D36;
+    }
+
+    /* زر الرجوع بشكل مناسب مع الألوان */
+    .btn-back {
+        background: #F6DEC4;
+        color: #5B3A26;
+        border-radius: 999px;
+        padding: 0.4rem 1.1rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        box-shadow: 0 4px 10px rgba(120, 88, 62, 0.15);
+        border: 1px solid rgba(200, 160, 120, 0.7);
+        transition: 0.2s ease-in-out;
+    }
+
+    .btn-back:hover {
+        background: #EBC79F;
+    }
+
+    /* كروت الإحصائيات بدرجات بيج تناسب الخلفية */
+    .stat-soft {
+        background: #F6DEC4;
+        color: #5B3A26;
+        box-shadow: 0 4px 10px rgba(120, 88, 62, 0.18);
+    }
+
+    .badge-soft {
+        background: #F6DEC4;
+        color: #5B3A26;
+    }
+
+    /* شريط التقدم */
+    .progress-bar-bg {
+        background-color: #E6D7C6;
+    }
+
+    .progress-green {
+        background-color: #5CB85C;
+    }
+    .progress-blue {
+        background-color: #4A90E2;
+    }
+    .progress-purple {
+        background-color: #9B59B6;
+    }
+    .progress-red {
+        background-color: #E74C3C;
+    }
+</style>
+
+<div class="max-w-5xl mx-auto px-6 py-8">
+    <!-- الهيدر الصغير: زر رجوع فقط -->
+    <div class="mb-6 flex items-center">
+        <a
+            href="{{ url_for('nurseries_page') }}"
+            class="btn-back">
+            ← {{ t_back }}
+        </a>
+    </div>
+
+    <div class="card-soft p-6 md:p-8">
+        <!-- Title & Rating -->
+        <div class="mb-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+                {{ nursery.name }}
+            </h2>
+
+            <div class="flex flex-wrap items-center gap-3 mb-2">
+                <div class="text-2xl text-yellow-400">
+                    {% for i in range(nursery.rating|round(0, 'floor')|int) %}
+                        ⭐
+                    {% endfor %}
+                </div>
+                <span class="text-xl font-bold text-orange-600">
+                    {{ "%.1f"|format(nursery.rating) }}
+                </span>
+                <span class="text-gray-600 text-sm md:text-base">
+                    ({{ nursery.reviews_count }} {{ t_parent_reviews }})
+                </span>
+            </div>
+
+            <p class="text-gray-600 flex items-center gap-2 text-sm md:text-lg">
+                <span>📍</span>
+                <span>{{ nursery.location }}</span>
+            </p>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-6 p-4 bg-orange-50/80 rounded-xl border border-orange-100">
+            <p class="text-gray-700 text-sm md:text-lg">
+                {{ nursery.description }}
+            </p>
+        </div>
+
+        <!-- Statistics cards -->
+        <div class="mb-6">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">{{ t_statistics }}</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="stat-soft p-4 rounded-xl text-center">
+                    <div class="text-3xl font-bold">
+                        {{ nursery.parent_satisfaction }}%
+                    </div>
+                    <div class="text-sm mt-1">{{ t_parent_satisfaction }}</div>
+                </div>
+                <div class="stat-soft p-4 rounded-xl text-center">
+                    <div class="text-3xl font-bold">
+                        {{ nursery.teacher_quality }}%
+                    </div>
+                    <div class="text-sm mt-1">{{ t_teacher_quality }}</div>
+                </div>
+                <div class="stat-soft p-4 rounded-xl text-center">
+                    <div class="text-3xl font-bold">
+                        {{ nursery.facilities_rating }}%
+                    </div>
+                    <div class="text-sm mt-1">{{ t_facilities }}</div>
+                </div>
+                <div class="stat-soft p-4 rounded-xl text-center">
+                    <div class="text-3xl font-bold">
+                        {{ nursery.safety_rating }}%
+                    </div>
+                    <div class="text-sm mt-1">{{ t_safety }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress bars -->
+        <div class="mb-6 space-y-4">
+            <div>
+                <div class="flex justify-between mb-1 text-sm md:text-base">
+                    <span class="font-semibold text-gray-700">{{ t_parent_satisfaction }}</span>
+                    <span class="font-bold text-green-700">
+                        {{ nursery.parent_satisfaction }}%
+                    </span>
+                </div>
+                <div class="w-full progress-bar-bg rounded-full h-3">
+                    <div
+                        class="progress-green h-3 rounded-full"
+                        style="width: {{ nursery.parent_satisfaction }}%;"
+                    ></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between mb-1 text-sm md:text-base">
+                    <span class="font-semibold text-gray-700">{{ t_teacher_quality }}</span>
+                    <span class="font-bold text-blue-700">
+                        {{ nursery.teacher_quality }}%
+                    </span>
+                </div>
+                <div class="w-full progress-bar-bg rounded-full h-3">
+                    <div
+                        class="progress-blue h-3 rounded-full"
+                        style="width: {{ nursery.teacher_quality }}%;"
+                    ></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between mb-1 text-sm md:text-base">
+                    <span class="font-semibold text-gray-700">{{ t_facilities }}</span>
+                    <span class="font-bold text-purple-700">
+                        {{ nursery.facilities_rating }}%
+                    </span>
+                </div>
+                <div class="w-full progress-bar-bg rounded-full h-3">
+                    <div
+                        class="progress-purple h-3 rounded-full"
+                        style="width: {{ nursery.facilities_rating }}%;"
+                    ></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex justify-between mb-1 text-sm md:text-base">
+                    <span class="font-semibold text-gray-700">{{ t_safety }}</span>
+                    <span class="font-bold text-red-700">
+                        {{ nursery.safety_rating }}%
+                    </span>
+                </div>
+                <div class="w-full progress-bar-bg rounded-full h-3">
+                    <div
+                        class="progress-red h-3 rounded-full"
+                        style="width: {{ nursery.safety_rating }}%;"
+                    ></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Curriculum & Details -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">{{ t_curriculum }}</h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for curr in nursery.curriculum.split(",") %}
+                    <span
+                        class="px-4 py-2 badge-soft rounded-full font-semibold text-xs md:text-sm"
+                    >
+                        {{ curr }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">{{ t_details }}</h3>
+                <div class="space-y-2 text-gray-700 text-sm md:text-base">
+                    <p><strong>{{ t_age_groups }}:</strong> {{ nursery.age_groups }}</p>
+                    <p><strong>{{ t_total_children }}:</strong> {{ nursery.total_children }}</p>
+                    <p><strong>{{ t_staff_ratio }}:</strong> {{ nursery.staff_ratio }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">{{ t_features }}</h3>
+            <div class="grid grid-cols-2 gap-3">
+                {% for feature in nursery.features.split("|") %}
+                <div class="flex items-center gap-2 text-gray-700 text-sm md:text-base">
+                    <span class="text-green-500 text-xl">✓</span>
+                    <span>{{ feature }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Parent Reviews -->
+        <div class="mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">{{ t_parent_reviews }}</h3>
+            <div class="space-y-4">
+                {% for r in nursery.reviews %}
+                <div class="bg-gray-50/90 p-4 rounded-xl">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-semibold text-gray-800">
+                            {{ r.reviewer_name }}
+                        </span>
+                        <span class="text-yellow-500">
+                            {% for i in range(r.rating) %}⭐{% endfor %}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 text-sm md:text-base">"{{ r.comment }}"</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Contact & Price -->
+        <div
+            class="bg-gradient-to-r from-orange-400 to-amber-500 p-6 rounded-xl text-white mb-6"
+        >
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <div>
+                    <h3 class="text-xl font-bold mb-2">{{ t_contact }}</h3>
+                    <a
+                        href="tel:{{ nursery.phone }}"
+                        class="text-2xl font-mono hover:underline"
+                    >
+                        {{ nursery.phone }}
+                    </a>
+                </div>
+                <div class="md:text-right">
+                    <div class="text-sm opacity-90">{{ t_monthly_fee }}</div>
+                    <div class="text-3xl md:text-4xl font-bold">
+                        €{{ nursery.price }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- خريطة Google Maps -->
+        <div class="mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-3">{{ t_map_title }}</h3>
+            <p class="text-sm text-gray-600 mb-2">
+                <strong>{{ t_location_label }}:</strong> {{ nursery.location }}
+            </p>
+            <div class="rounded-2xl overflow-hidden shadow-md h-64">
+                <iframe
+                    width="100%"
+                    height="100%"
+                    style="border:0;"
+                    loading="lazy"
+                    allowfullscreen
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps?q={{ nursery.location|replace(' ', '+') }}&output=embed">
+                </iframe>
+            </div>
+        </div>
+
+        <!-- زر Close في النهاية -->
+        <div class="mt-4 text-center">
+            <a
+                href="{{ url_for('nurseries_page') }}"
+                class="inline-flex justify-center items-center px-6 py-2 rounded-full btn-brown text-sm font-semibold shadow">
+                {{ t_close }}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+{# --------- ترجمة بسيطة حسب اللغة --------- #}
+{% set lang = current_lang %}
+{% if lang == 'de' %}
+    {% set t_title = 'Konto erstellen' %}
+    {% set t_subtitle = 'Registrieren Sie sich, um Kindergärten zu entdecken.' %}
+    {% set t_username = 'Benutzername' %}
+    {% set t_email = 'E-Mail' %}
+    {% set t_password = 'Passwort' %}
+    {% set t_confirm = 'Passwort bestätigen' %}
+    {% set t_signup = 'Registrieren' %}
+    {% set t_have_account = 'Sie haben bereits ein Konto?' %}
+    {% set t_signin = 'Anmelden' %}
+    {% set t_success = 'Ihr Konto wurde erfolgreich erstellt. Sie können sich jetzt anmelden.' %}
+{% elif lang == 'ar' %}
+    {% set t_title = 'إنشاء حساب' %}
+    {% set t_subtitle = 'سجّل الآن لبدء استكشاف الحضانات.' %}
+    {% set t_username = 'اسم المستخدم' %}
+    {% set t_email = 'البريد الإلكتروني' %}
+    {% set t_password = 'كلمة المرور' %}
+    {% set t_confirm = 'تأكيد كلمة المرور' %}
+    {% set t_signup = 'إنشاء حساب' %}
+    {% set t_have_account = 'لديك حساب بالفعل؟' %}
+    {% set t_signin = 'تسجيل الدخول' %}
+    {% set t_success = 'تم إنشاء حسابك بنجاح، يمكنك الآن تسجيل الدخول.' %}
+{% else %}
+    {% set t_title = 'Create Account' %}
+    {% set t_subtitle = 'Sign up to start exploring nurseries.' %}
+    {% set t_username = 'Username' %}
+    {% set t_email = 'Email' %}
+    {% set t_password = 'Password' %}
+    {% set t_confirm = 'Confirm Password' %}
+    {% set t_signup = 'Sign Up' %}
+    {% set t_have_account = 'Already have an account?' %}
+    {% set t_signin = 'Sign In' %}
+    {% set t_success = 'Your account has been created successfully. You can now sign in.' %}
+{% endif %}
+
+<div class="w-full max-w-md mx-auto">
+    <div class="bg-white rounded-3xl shadow-2xl px-10 pt-10 pb-8 relative">
+        <!-- لوجو -->
+        <div class="flex justify-center mb-4">
+            <div class="logo-circle logo-glow w-16 h-16 rounded-full bg-indigo-500 flex items-center justify-center">
+                <span class="star-spin text-white text-2xl">★</span>
+            </div>
+        </div>
+
+        <!-- عنوان الصفحة -->
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-semibold text-gray-900">{{ t_title }}</h2>
+            <p class="text-sm text-gray-500 mt-1">
+                {{ t_subtitle }}
+            </p>
+        </div>
+
+        {# رسالة نجاح #}
+        {% if success %}
+        <div class="mb-4 px-4 py-2 rounded-lg bg-green-50 border border-green-200 text-xs text-green-700">
+            {{ t_success }}
+        </div>
+        {% endif %}
+
+        {# رسالة خطأ #}
+        {% if error %}
+        <div class="mb-4 px-4 py-2 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">{{ t_username }}</label>
+                <input
+                    type="text"
+                    name="username"
+                    value="{{ request.form.get('username', '') }}"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm"
+                    required
+                />
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">{{ t_email }}</label>
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ request.form.get('email', '') }}"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm"
+                    required
+                />
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">{{ t_password }}</label>
+                <input
+                    type="password"
+                    name="password"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm"
+                    required
+                />
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">{{ t_confirm }}</label>
+                <input
+                    type="password"
+                    name="confirm_password"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 text-sm"
+                    required
+                />
+            </div>
+
+            <button
+                type="submit"
+                class="w-full mt-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 rounded-lg text-sm shadow-md">
+                {{ t_signup }}
+            </button>
+        </form>
+
+        <p class="mt-4 text-center text-xs text-gray-600">
+            {{ t_have_account }}
+            <a href="{{ url_for('login_page', lang=current_lang) }}"
+               class="text-blue-600 font-semibold hover:underline">
+                {{ t_signin }}
+            </a>
+        </p>
+    </div>
+</div>
+{% endblock %}

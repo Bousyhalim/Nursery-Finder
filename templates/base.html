@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>
+        {% if title %}{{ title }} - Nursery Finder{% else %}Nursery Finder{% endif %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* خلفية الصورة */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-image: url("https://images.pexels.com/photos/1741231/pexels-photo-1741231.jpeg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        /* تصميم الكارت */
+        .custom-card {
+            background: rgba(255, 255, 255, 0.78);   /* بيچ فاتح */
+            backdrop-filter: blur(8px);             /* Blur بسيط */
+            border-radius: 22px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+        }
+
+        /* زر تسجيل الدخول */
+        .btn-primary {
+            background: #7A583E;    /* بني دافي مناسب للصورة */
+            color: white;
+            transition: 0.2s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background: #6A4D36;   /* أغمق */
+        }
+
+        /* حركة اللوجو */
+        .logo-circle {
+            box-shadow: 0 18px 45px rgba(122, 88, 62, 0.45); /* بني دافئ */
+        }
+
+        .logo-glow {
+            animation: glow-pulse 2.5s ease-in-out infinite;
+        }
+
+        .star-spin {
+            animation: star-rotate 5s linear infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%   { transform: translateY(0); }
+            50%  { transform: translateY(-1.5px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes star-rotate {
+            0%   { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center px-4 py-10">
+    {% block content %}{% endblock %}
+</body>
+</html>

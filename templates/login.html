@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+{# --------- ترجمات بسيطة حسب اللغة --------- #}
+{% set lang = current_lang %}
+{% if lang == 'de' %}
+    {% set t_title = 'Nursery Finder' %}
+    {% set t_subtitle = 'Melden Sie sich an, um die besten Kindergärten zu entdecken' %}
+    {% set t_welcome = 'Willkommen zurück' %}
+    {% set t_username = 'Benutzername' %}
+    {% set t_password = 'Passwort' %}
+    {% set t_remember = 'Angemeldet bleiben' %}
+    {% set t_forgot = 'Passwort vergessen?' %}
+    {% set t_signin = 'Anmelden' %}
+    {% set t_no_account = 'Noch kein Konto?' %}
+    {% set t_signup = 'Registrieren' %}
+{% elif lang == 'ar' %}
+    {% set t_title = 'باحث الحضانة' %}
+    {% set t_subtitle = 'سجّل الدخول لاكتشاف أفضل الحضانات' %}
+    {% set t_welcome = 'مرحباً بعودتك' %}
+    {% set t_username = 'اسم المستخدم' %}
+    {% set t_password = 'كلمة المرور' %}
+    {% set t_remember = 'تذكرني' %}
+    {% set t_forgot = 'نسيت كلمة المرور؟' %}
+    {% set t_signin = 'تسجيل الدخول' %}
+    {% set t_no_account = 'ليس لديك حساب؟' %}
+    {% set t_signup = 'سجّل الآن' %}
+{% else %}
+    {% set t_title = 'Nursery Finder' %}
+    {% set t_subtitle = 'Sign in to discover the best nurseries' %}
+    {% set t_welcome = 'Welcome Back' %}
+    {% set t_username = 'Username' %}
+    {% set t_password = 'Password' %}
+    {% set t_remember = 'Remember me' %}
+    {% set t_forgot = 'Forgot Password?' %}
+    {% set t_signin = 'Sign In' %}
+    {% set t_no_account = "Don't have an account?" %}
+    {% set t_signup = 'Sign Up' %}
+{% endif %}
+
+<div class="w-full max-w-md mx-auto">
+    <!-- هنا عدلنا لون الكارت -->
+    <div class="bg-orange-50 rounded-3xl shadow-2xl px-10 pt-10 pb-8 relative border border-orange-100 backdrop-blur-sm">
+        <!-- لوجو متحرك -->
+        <div class="flex justify-center mb-4">
+            <div class="logo-circle logo-glow w-16 h-16 rounded-full bg-orange-500 flex items-center justify-center">
+                <span class="star-spin text-white text-2xl">★</span>
+            </div>
+        </div>
+
+        <!-- اسم الموقع -->
+        <div class="text-center mb-2">
+            <h1 class="text-2xl font-bold text-gray-900">{{ t_title }}</h1>
+            <p class="text-xs text-gray-500 mt-1">
+                {{ t_subtitle }}
+            </p>
+        </div>
+
+        <!-- اللغات -->
+        <div class="flex justify-center gap-6 text-xs font-semibold text-gray-700 mt-4 mb-6">
+            <a href="{{ url_for('login_page', lang='en') }}"
+               class="{% if current_lang == 'en' %} text-orange-600 underline {% endif %}">
+                GB
+            </a>
+            <a href="{{ url_for('login_page', lang='de') }}"
+               class="{% if current_lang == 'de' %} text-orange-600 underline {% endif %}">
+                DE
+            </a>
+            <a href="{{ url_for('login_page', lang='ar') }}"
+               class="{% if current_lang == 'ar' %} text-orange-600 underline {% endif %}">
+                SA
+            </a>
+        </div>
+
+        <!-- Welcome Back -->
+        <div class="text-center mb-6">
+            <h2 class="text-xl font-semibold text-gray-900">{{ t_welcome }}</h2>
+        </div>
+
+        <!-- رسالة خطأ -->
+        {% if error %}
+        <div class="mb-4 px-4 py-2 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- فورم تسجيل الدخول -->
+        <form action="{{ url_for('login_post') }}" method="post" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">{{ t_username }}</label>
+                <input
+                    type="text"
+                    name="username"
+                    value="{{ saved_username or '' }}"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                    required
+                />
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1">{{ t_password }}</label>
+                <input
+                    type="password"
+                    name="password"
+                    value=""
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent text-sm"
+                    required
+                />
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-gray-600">
+                <label class="inline-flex items-center gap-2">
+                    <input
+                        type="checkbox"
+                        name="remember_me"
+                        class="rounded border-gray-300"
+                        {% if saved_remember %}checked{% endif %}>
+                    <span>{{ t_remember }}</span>
+                </label>
+
+                <a href="{{ url_for('forgot_password', lang=current_lang) }}"
+                   class="text-orange-500 hover:text-orange-600">
+                    {{ t_forgot }}
+                </a>
+            </div>
+
+            <button
+                type="submit"
+                class="w-full mt-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-lg text-sm shadow-md transition">
+                {{ t_signin }}
+            </button>
+        </form>
+
+        <!-- Sign Up -->
+        <p class="mt-4 text-center text-xs text-gray-600">
+            {{ t_no_account }}
+            <a href="{{ url_for('signup', lang=current_lang) }}"
+               class="text-orange-600 font-semibold hover:underline">
+                {{ t_signup }}
+            </a>
+        </p>
+
+        {# تم حذف صندوق Demo Credentials بالكامل #}
+    </div>
+</div>
+{% endblock %}

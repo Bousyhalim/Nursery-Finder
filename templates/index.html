@@ -1,0 +1,407 @@
+{% extends "base.html" %}
+
+{% block content %}
+{# --------- ترجمات بسيطة حسب اللغة --------- #}
+{% set lang = current_lang %}
+{% if lang == 'de' %}
+    {% set t_title = 'Nursery Finder' %}
+    {% set t_tagline = 'Finden Sie den perfekten Kindergarten für Ihr Kind' %}
+    {% set t_search_placeholder = 'Suchen Sie nach Kindergärten nach Name oder Standort...' %}
+    {% set t_all_curricula = 'Alle Lehrpläne' %}
+    {% set t_montessori = 'Montessori' %}
+    {% set t_british = 'Britisch' %}
+    {% set t_american = 'Amerikanisch' %}
+    {% set t_international = 'International' %}
+    {% set t_sort_rating = 'Höchste Bewertung' %}
+    {% set t_sort_name = 'Name (A–Z)' %}
+    {% set t_sort_price_low = 'Preis (Niedrig bis Hoch)' %}
+    {% set t_sort_price_high = 'Preis (Hoch bis Niedrig)' %}
+    {% set t_search_btn = 'Suchen' %}
+    {% set t_curriculum = 'Lehrplan' %}
+    {% set t_capacity = 'Kapazität' %}
+    {% set t_children = 'Kinder' %}
+    {% set t_monthly_fee = 'Monatliche Gebühr' %}
+    {% set t_no_results_title = 'Keine Ergebnisse gefunden' %}
+    {% set t_no_results_text = 'Versuchen Sie andere Suchbegriffe oder ändern Sie den Filter' %}
+    {% set t_view_details = 'Details anzeigen' %}
+    {% set t_logout = 'Abmelden' %}
+    {% set t_about_title = 'Über Nursery Finder' %}
+    {% set t_about_text = 'Nursery Finder hilft Eltern dabei, hochwertige Kindergärten nach Standort, Lehrplan, Preis und Bewertungen von Eltern zu vergleichen. Mit klaren Karten, intelligenten Filtern und Mehrsprachigkeit können Sie schnell passende Einrichtungen finden, Favoriten markieren und jedes Profil in Ruhe kennenlernen.' %}
+{% elif lang == 'ar' %}
+    {% set t_title = 'باحث الحضانة' %}
+    {% set t_tagline = 'اعثر على الحضانة المثالية لطفلك' %}
+    {% set t_search_placeholder = 'ابحث عن حضانة بالاسم أو الموقع...' %}
+    {% set t_all_curricula = 'كل المناهج' %}
+    {% set t_montessori = 'منتسوري' %}
+    {% set t_british = 'بريطاني' %}
+    {% set t_american = 'أمريكي' %}
+    {% set t_international = 'دولي' %}
+    {% set t_sort_rating = 'الأعلى تقييماً' %}
+    {% set t_sort_name = 'الاسم (أ–ي)' %}
+    {% set t_sort_price_low = 'السعر (من الأقل إلى الأعلى)' %}
+    {% set t_sort_price_high = 'السعر (من الأعلى إلى الأقل)' %}
+    {% set t_search_btn = 'بحث' %}
+    {% set t_curriculum = 'المنهج' %}
+    {% set t_capacity = 'السعة' %}
+    {% set t_children = 'طفل' %}
+    {% set t_monthly_fee = 'الرسوم الشهرية' %}
+    {% set t_no_results_title = 'لا توجد نتائج' %}
+    {% set t_no_results_text = 'جرّب كلمات بحث مختلفة أو غيّر إعدادات الفلتر' %}
+    {% set t_view_details = 'عرض التفاصيل' %}
+    {% set t_logout = 'تسجيل الخروج' %}
+    {% set t_about_title = 'عن باحث الحضانة' %}
+    {% set t_about_text = 'يساعدك باحث الحضانة على مقارنة الحضانات بسهولة حسب الموقع، المنهج، السعر وتقييمات أولياء الأمور، لتختار الأفضل لطفلك بثقة. من خلال واجهة بسيطة وفلترة ذكية يمكنك استكشاف الخيارات المتاحة، عمل قائمة قصيرة بالحضانات المناسبة، ورؤية صورة أوضح عن جودة الخدمات قبل اتخاذ القرار.' %}
+{% else %}
+    {% set t_title = 'Nursery Finder' %}
+    {% set t_tagline = 'Find the perfect nursery for your child' %}
+    {% set t_search_placeholder = 'Search for nurseries by name or location...' %}
+    {% set t_all_curricula = 'All Curricula' %}
+    {% set t_montessori = 'Montessori' %}
+    {% set t_british = 'British' %}
+    {% set t_american = 'American' %}
+    {% set t_international = 'International' %}
+    {% set t_sort_rating = 'Highest Rated' %}
+    {% set t_sort_name = 'Name (A–Z)' %}
+    {% set t_sort_price_low = 'Price (Low to High)' %}
+    {% set t_sort_price_high = 'Price (High to Low)' %}
+    {% set t_search_btn = 'Search' %}
+    {% set t_curriculum = 'Curriculum' %}
+    {% set t_capacity = 'Capacity' %}
+    {% set t_children = 'children' %}
+    {% set t_monthly_fee = 'Monthly Fee' %}
+    {% set t_no_results_title = 'No Results Found' %}
+    {% set t_no_results_text = 'Try different search terms or change the filter' %}
+    {% set t_view_details = 'View Details' %}
+    {% set t_logout = 'Logout' %}
+    {% set t_about_title = 'About Nursery Finder' %}
+    {% set t_about_text = 'Nursery Finder helps parents compare high-quality nurseries by location, curriculum, price, and parent reviews. With clear cards, smart filters, and multi-language support, you can quickly shortlist options, explore detailed profiles, and feel more confident about choosing the right place for your child.' %}
+{% endif %}
+
+{# أول حرفين من اسم المستخدم لعرضهم في دائرة اليوزر #}
+{% set initials = (current_user_name or 'U')[:2].upper() %}
+
+<style>
+    /* الخلفية الخاصة بالصفحة الثانية فقط */
+    body {
+        background-image: url("https://images.pexels.com/photos/7055864/pexels-photo-7055864.jpeg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .card-soft {
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 22px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+
+    .btn-brown {
+        background: #7A583E;
+        color: #fff;
+        transition: 0.2s ease-in-out;
+    }
+
+    .btn-brown:hover {
+        background: #6A4D36;
+    }
+
+    .glow-title {
+        text-shadow: 0 0 18px rgba(255, 210, 170, 0.9);
+    }
+
+    /* أزرار اللغات كبادجات بنية */
+    .language-btn {
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid #7A583E;
+        color: #7A583E;
+        background-color: rgba(255,255,255,0.88);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    .language-btn:hover {
+        background-color: #7A583E;
+        color: #fff;
+    }
+
+    .language-btn.active {
+        background-color: #7A583E;
+        color: #fff;
+    }
+
+    /* دائرة المستخدم */
+    .user-avatar {
+        background: #7A583E;
+        color: #fff;
+    }
+
+    /* علشان المساحة اللي تحت الفورم تفضل شبه ثابتة
+       سواء النتايج قليلة أو كتير */
+    .results-wrapper {
+        margin-top: 1.5rem;
+        min-height: 420px;  /* عدلي الرقم لو حبيتي ارتفاع أكبر أو أقل */
+    }
+</style>
+
+<div class="w-full max-w-6xl mx-auto py-6">
+    <!-- الهيدر: لوجو + اسم الموقع + لغات + خروج + يوزر -->
+    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <!-- لوجو + اسم -->
+        <div class="flex flex-col items-center md:items-start">
+            <div class="logo-circle logo-glow w-16 h-16 rounded-full bg-orange-500 flex items-center justify-center mb-3">
+                <span class="star-spin text-white text-2xl">★</span>
+            </div>
+            <!-- لون الاسم والجملة تحته = بني -->
+            <h1 class="text-2xl font-bold text-[#7A583E] glow-title">{{ t_title }}</h1>
+            <p class="text-xs mt-1 text-[#7A583E]">
+                {{ t_tagline }}
+            </p>
+        </div>
+
+        <!-- لغات + يوزر + خروج -->
+        <div class="flex flex-col items-center md:items-end gap-2 text-xs font-semibold text-white">
+            <!-- أزرار اللغات -->
+            <div class="flex gap-3">
+                <a href="{{ url_for('nurseries_page', lang='en', q=search_query, curriculum=curriculum_filter, sort=sort_by) }}"
+                   class="language-btn {% if current_lang == 'en' %} active {% endif %}"
+                   data-lang="en">
+                    GB
+                </a>
+            <a href="{{ url_for('nurseries_page', lang='de', q=search_query, curriculum=curriculum_filter, sort=sort_by) }}"
+                   class="language-btn {% if current_lang == 'de' %} active {% endif %}"
+                   data-lang="de">
+                    DE
+                </a>
+                <a href="{{ url_for('nurseries_page', lang='ar', q=search_query, curriculum=curriculum_filter, sort=sort_by) }}"
+                   class="language-btn {% if current_lang == 'ar' %} active {% endif %}"
+                   data-lang="ar">
+                    SA
+                </a>
+            </div>
+
+            <!-- يوزر + خروج -->
+            <div class="flex items-center gap-3 mt-1">
+                <!-- أيقونة المستخدم مع قائمة -->
+                <div class="relative">
+                    <button
+                        id="userMenuButton"
+                        type="button"
+                        class="user-avatar w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow">
+                        {{ initials }}
+                    </button>
+                    <div
+                        id="userMenu"
+                        class="hidden absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-lg text-[11px] text-gray-700 py-2 z-20">
+                        <div class="px-3 py-2 border-b border-gray-100 font-semibold">
+                            {{ current_user_name or 'User' }}
+                        </div>
+                        </a>
+                        <a href="{{ url_for('profile') }}"
+                           class="block px-3 py-1.5 hover:bg-gray-100">
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+
+                <!-- زر خروج بني -->
+                <a href="{{ url_for('logout') }}"
+                   class="inline-flex items-center px-4 py-1.5 rounded-full btn-brown text-[11px] font-semibold shadow">
+                    {{ t_logout }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- صندوق البحث + الفلاتر -->
+    <div class="card-soft p-6 mb-6">
+        <form method="get" action="{{ url_for('nurseries_page') }}" class="space-y-3">
+            <input
+                id="searchInput"
+                type="text"
+                name="q"
+                value="{{ search_query or '' }}"
+                placeholder="{{ t_search_placeholder }}"
+                class="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+            />
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <select
+                    name="curriculum"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400">
+                    <option value="All" {% if curriculum_filter == 'All' or not curriculum_filter %}selected{% endif %}>{{ t_all_curricula }}</option>
+                    <option value="Montessori" {% if curriculum_filter == 'Montessori' %}selected{% endif %}>{{ t_montessori }}</option>
+                    <option value="British" {% if curriculum_filter == 'British' %}selected{% endif %}>{{ t_british }}</option>
+                    <option value="American" {% if curriculum_filter == 'American' %}selected{% endif %}>{{ t_american }}</option>
+                    <option value="International" {% if curriculum_filter == 'International' %}selected{% endif %}>{{ t_international }}</option>
+                </select>
+
+                <select
+                    name="sort"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400">
+                    <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>{{ t_sort_rating }}</option>
+                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>{{ t_sort_name }}</option>
+                    <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>{{ t_sort_price_low }}</option>
+                    <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>{{ t_sort_price_high }}</option>
+                </select>
+
+                <!-- اختيار العملة -->
+                <select
+                    id="currencySelect"
+                    class="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400">
+                    <option value="EUR" {% if current_currency == 'EUR' %}selected{% endif %}>EUR (€)</option>
+                    <option value="USD" {% if current_currency == 'USD' %}selected{% endif %}>USD ($)</option>
+                    <option value="AED" {% if current_currency == 'AED' %}selected{% endif %}>AED (د.إ)</option>
+                </select>
+
+                <button
+                    type="submit"
+                    class="w-full btn-brown text-white font-semibold py-2 rounded-lg text-sm shadow-md">
+                    {{ t_search_btn }}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- About + النتائج داخل wrapper علشان الارتفاع يثبت -->
+    <div class="results-wrapper">
+        <!-- About Us -->
+        <div class="card-soft p-5 mb-8 bg-white/90">
+            <h2 class="text-lg font-bold text-gray-800 mb-2">{{ t_about_title }}</h2>
+            <p class="text-sm text-gray-600">
+                {{ t_about_text }}
+            </p>
+        </div>
+
+        <!-- لو مفيش نتائج -->
+        {% if nurseries|length == 0 %}
+        <div class="card-soft p-10 flex flex-col items-center bg-white/90">
+            <div class="text-6xl mb-4">😔</div>
+            <h2 id="noResultsTitle" class="text-2xl font-semibold text-gray-800 mb-2">
+                {{ t_no_results_title }}
+            </h2>
+            <p id="noResultsText" class="text-gray-500 text-sm text-center max-w-md">
+                {{ t_no_results_text }}
+            </p>
+        </div>
+        {% else %}
+        <!-- كروت الحضانات -->
+        <div class="grid gap-6 md:grid-cols-3">
+            {% for n in nurseries %}
+            <div class="card-soft p-5 flex flex-col justify-between bg-white/90">
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <h3 class="font-semibold text-gray-900 text-sm md:text-base">{{ n.name }}</h3>
+                        <span class="text-yellow-400 text-sm">★ {{ "%.1f"|format(n.rating) }}</span>
+                    </div>
+                    <p class="text-[11px] text-gray-500 mb-2">
+                        {{ n.location }}
+                    </p>
+                    <p class="text-[11px] text-gray-600 mb-1">
+                        <span class="font-semibold">{{ t_curriculum }}:</span> {{ n.curriculum }}
+                    </p>
+                    <p class="text-[11px] text-gray-600 mb-1">
+                        <span class="font-semibold">{{ t_capacity }}:</span> {{ n.capacity }} {{ t_children }}
+                    </p>
+                    <p class="text-[11px] text-gray-600">
+                        <span class="font-semibold">{{ t_monthly_fee }}:</span>
+                        <!-- السعر الأساسي + العملة الأساسية -->
+                        <span
+                            class="ml-1 price-value"
+                            data-base-price="{{ n.price }}"
+                            data-base-currency="{{ n.currency }}">
+                            {{ n.currency }} {{ n.price }}
+                        </span>
+                    </p>
+                </div>
+                <div class="mt-4">
+                    <a
+                        href="{{ url_for('nursery_detail', nursery_id=n.id) }}"
+                        class="w-full inline-flex justify-center items-center btn-brown text-white text-sm font-semibold py-2 rounded-lg">
+                        {{ t_view_details }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{# سكريبت بسيط لتفعيل منيو اليوزر + تحويل العملات #}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // منيو المستخدم
+    const userMenuButton = document.getElementById('userMenuButton');
+    const userMenu = document.getElementById('userMenu');
+
+    if (userMenuButton && userMenu) {
+        userMenuButton.addEventListener('click', function (e) {
+            e.stopPropagation();
+            userMenu.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!userMenu.contains(e.target) && e.target !== userMenuButton) {
+                userMenu.classList.add('hidden');
+            }
+        });
+    }
+
+    // تحويل العملات
+    const currencySelect = document.getElementById('currencySelect');
+    const priceEls = document.querySelectorAll('.price-value');
+
+    // نسب تقريبية للتحويل
+    const rates = {
+        EUR: { EUR: 1,    USD: 1.07, AED: 3.95 },
+        USD: { EUR: 0.93, USD: 1,    AED: 3.67 },
+        AED: { EUR: 0.25, USD: 0.27, AED: 1    }
+    };
+
+    function formatPrice(value, currency) {
+        const rounded = Math.round(value);
+        if (currency === 'EUR') return '€' + rounded;
+        if (currency === 'USD') return '$' + rounded;
+        if (currency === 'AED') return rounded + ' د.إ';
+        return rounded + ' ' + currency;
+    }
+
+    function updatePrices(targetCurrency) {
+        priceEls.forEach(el => {
+            const basePrice = parseFloat(el.dataset.basePrice);
+            const baseCur = (el.dataset.baseCurrency || 'EUR').toUpperCase();
+
+            if (!basePrice || !rates[baseCur] || !rates[baseCur][targetCurrency]) {
+                return;
+            }
+
+            const converted = basePrice * rates[baseCur][targetCurrency];
+            el.textContent = formatPrice(converted, targetCurrency);
+        });
+    }
+
+    const initialCurrency = "{{ current_currency or 'EUR' }}";
+
+    if (currencySelect) {
+        currencySelect.value = initialCurrency;
+        updatePrices(initialCurrency);
+
+        currencySelect.addEventListener('change', function () {
+            const newCur = this.value;
+            updatePrices(newCur);
+
+            // حفظ العملة في السيشن/المستخدم
+            fetch("{{ url_for('set_currency') }}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ currency: newCur })
+            }).catch(() => {});
+        });
+    } else {
+        updatePrices(initialCurrency);
+    }
+});
+</script>
+{% endblock %}
